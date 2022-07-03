@@ -1,38 +1,39 @@
-# mporting necessary libraries
+# importing necessary libraries
 import pywebio.output as pout
 import pywebio.input as pimp
 import csv
 
-open('events.csv', 'w') # initialize the output file
+open('events.csv', 'a')  # initialize the output file
+
 
 class Event:  # Event class
 
-    def __init__(self, name, date, info):  # constructor
-        self.name = name
-        self.date = date
-        self.info = info
+    def __init__(default, name, date, info):  # constructor
+        default.name = name
+        default.date = date
+        default.info = info
 
     # setter methods
-    def setDate(self, date):
-        self.date = date
+    def setDate(default, date):
+        default.date = date
 
-    def setInfo(self, info):  # short one line info
-        self.info = info
+    def setInfo(default, info):  # short one line info
+        default.info = info
 
     # getter methods
-    def getName(self):
-        return self.name
+    def getName(default):
+        return default.name
 
-    def getDate(self):
-        return self.date
+    def getDate(default):
+        return default.date
 
-    def getInfo(self):  # short one line info
-        return self.info
+    def getInfo(default):  # short one line info
+        return default.info
 
-    def printDetails(self):  # print details of the event
-        print(self.getName())
-        print(self.getDate())
-        print(self.getInfo())
+    def printDetails(default):  # print details of the event
+        print(default.getName())
+        print(default.getDate())
+        print(default.getInfo())
 
 
 Eventlist = []  # GLOBAL VARIABLE
@@ -98,6 +99,7 @@ def editEvent(name, date, info):  # edit event info (Never used)
     '''
     Editing will be carried out as deleting the event and adding a new one
     '''
+   # Editing the event.
     for i in Eventlist:
         if i.getName() == name:
             i.setDate(date)
@@ -115,7 +117,7 @@ def printEvents():  # print events Debug function
         print("----------------------------------------------------")
 
 
-def displayEvents():  
+def displayEvents():
     # display events from list in scope1
     '''
 
@@ -130,7 +132,7 @@ def displayEvents():
         pout.put_table(displaylist)
 
 
-def notBlank(data): 
+def notBlank(data):
     # check if event parameters are blank else returns False
     '''
 
@@ -146,26 +148,26 @@ def notBlank(data):
     return False
 
 
-def addEventWeb():  
+def addEventWeb():
     # add event from pywebio to list
     '''
 
     :return: none
     '''
-    data = pimp.input_group("Add Event", [
-        pimp.input('Enter name of the event you want to add', name='name'),
-        pimp.input('Enter date of the event you want to add',
-                name='date', type=pimp.DATE),
-        pimp.input('Enter info of the event you want to add', name='info')],
-        validate=AddEventValidate
-        # check if event exists or is blank to show error. error is handled by pywebio
-    )
-    addEvent(name=data['name'], date=data['date'], info=data['info'])
+    if(acess_modifier!=0):
+        data = pimp.input_group("Add Event", [
+            pimp.input('Enter name of the event you want to add', name='name'),
+            pimp.input('Enter date of the event you want to add',
+                    name='date', type=pimp.DATE),
+            pimp.input('Enter info of the event you want to add', name='info')],
+            validate=AddEventValidate
+            # check if event exists or is blank to show error. error is handled by pywebio
+        )
+        addEvent(name=data['name'], date=data['date'], info=data['info'])
 
 
 def AddEventValidate(data):
-# check if event exists or is blank to show error. error is handled by pywebio
-
+    # check if event exists or is blank to show error. error is handled by pywebio
     '''
 
     :param data: input data from pywebio
@@ -181,7 +183,6 @@ def AddEventValidate(data):
 
 def DeleteEventValidate(data):
     # check if event exists or is blank to show error. error is handled by pywebio
-
     '''
 
     :param data: input data from pywebio
@@ -195,12 +196,12 @@ def DeleteEventValidate(data):
         return ('name', 'Event doesnt exists!')
 
 
-def exists(data):  
+def exists(data):
     # check if event exists
     '''
 
     :param data: input data from pywebio
-    :return: True if name already in Eventlist and false if name nt found in Eventlist
+    :return: True if name already in Eventlist and false if name not found in Eventlist
     '''
     exists = False
     for i in Eventlist:
@@ -217,15 +218,35 @@ def deleteEventWeb():
 
     Deleted events from the web using the name parameter.
     '''
-    data = pimp.input_group("Delete Event", [
-        pimp.input('Enter name of the event you want to delete', name='name')],
-        validate=DeleteEventValidate
-        # check if event exists or is blank to show error. error is handled by pywebio
-    )
-    deleteEvent(name=data['name'])
-
-
-readEventlist() #Get initial list of events
+    if(acess_modifier!=0):
+        data = pimp.input_group("Delete Event", [
+            pimp.input('Enter name of the event you want to delete', name='name')],
+            validate=DeleteEventValidate
+            # check if event exists or is blank to show error. error is handled by pywebio
+        )
+        deleteEvent(name=data['name'])
+def Login():
+    data2 = pimp.input_group("Login", [
+            pimp.input('Enter Username', name='username'),
+            pimp.input('Enter Password',
+                    name='password', type=pimp.PASSWORD),
+            ]
+            # check if event exists or is blank to show error. error is handled by pywebio
+        )
+def Register():
+    data3 = pimp.input_group("Login", [
+            pimp.input('Enter Username', name='username'),
+            pimp.input('Enter Password',
+                    name='password', type=pimp.PASSWORD),
+            pimp.input('Enter Verif Code',
+                    name='code')
+            ]
+            # check if event exists or is blank to show error. error is handled by pywebio
+        )
+acess_modifier=1
+readEventlist()  # Get initial list of events
+pout.put_button("Login", onclick=Login)  # a group of buttons
+pout.put_button("Register", onclick=Register)  # a group of buttons
 pout.put_button("Add Event", onclick=addEventWeb)  # a group of buttons
 pout.put_button("Delete Event", onclick=deleteEventWeb)  # a group of buttons
 pout.put_button("Display Events", onclick=displayEvents)  # a group of buttons
