@@ -227,33 +227,40 @@ def deleteEventWeb():
         deleteEvent(name=data['name'])
 def Login():
     global data2
+    pout.remove('scopeLogReg')
     with pout.use_scope("scopeLogReg2"):
         pout.put_button("Back", onclick=restart)
-    pout.remove('scopeLogReg')
-    data2 = pimp.input_group("Login", [
-            pimp.input('Enter Username', name='username',required=True),
-            pimp.input('Enter Password',
-                    name='password', type=pimp.PASSWORD,required=True)
-            ],
-            validate=check
     
-        )
+        data2 = pimp.input_group("Login", [
+                pimp.input('Enter Username', name='username',required=True),
+                pimp.input('Enter Password',
+                        name='password', type=pimp.PASSWORD,required=True)
+                ],
+                validate=check,
+                cancelable=True
+        
+            )
+    if((data2)==None):
+        restart()
     
     
 def Register():
-    with pout.use_scope("scopeLogReg2"):
-        pout.put_button("Back", onclick=restart)
     pout.remove('scopeLogReg')
+    
+    
     data3 = pimp.input_group("Register", [
             pimp.input('Enter Username', name='username',required=True),
             pimp.input('Enter Password',
-                    name='password', type=pimp.PASSWORD,required=True),
+                        name='password', type=pimp.PASSWORD,required=True),
             pimp.input('Enter Verif Code',
-                    name='code',required=True)
+                        name='code',required=True),
             ],
-             validate=is_valid
-           
-        )
+            validate=is_valid,
+            cancelable=True
+            
+            )
+    if((data3)==None):
+        restart()
 def is_valid(data3):
     a=1
 def check(data2):
@@ -264,10 +271,7 @@ def restart():
     with pout.use_scope('scopeLogReg'):
         pout.put_button("Login", onclick=Login)  # a group of buttons
         pout.put_button("Register", onclick=Register)  # a group of buttons
-"""with pout.use_scope('scopeV',clear=True):
-    pout.put_button("Add Event", onclick=addEventWeb)  # a group of buttons
-    pout.put_button("Delete Event", onclick=deleteEventWeb)  # a group of buttons
-    pout.put_button("Display Events", onclick=displayEvents)  # a group of buttons"""
+
 
 acess_modifier=0
 readEventlist()  # Get initial list of events
